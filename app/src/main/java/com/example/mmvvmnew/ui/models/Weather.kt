@@ -12,13 +12,13 @@ import com.google.gson.annotations.SerializedName
     tableName = "weather_main_table"
 )
 data class Weather(
-   /* @Nullable
-    val city: City,*/
+    @Nullable
+    val city: City,
     @PrimaryKey
     @SerializedName("cnt")
     val id: Int,
     val cod: String,
-   /* @Nullable
-    val list: List<SingleWeather>,*/
+    @Nullable
+    val list: List<SingleWeather>,
     val message: Double
 )

@@ -3,15 +3,20 @@ package com.example.mmvvmnew.ui.main
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.mmvvmnew.ui.database.WeatherRepository
 import com.example.mmvvmnew.ui.database.WeatherRoomDatabase
+import com.example.mmvvmnew.ui.models.SingleWeather
 import com.example.mmvvmnew.ui.models.Weather
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
+    var pusta: List<SingleWeather> = emptyList()
 
-    // The ViewModel maintains a reference to the repository to get data.
+    val allWords = MutableLiveData<MutableList<SingleWeather>>(pusta.toMutableList())
+
+    /*// The ViewModel maintains a reference to the repository to get data.
     private val repository: WeatherRepository
     // LiveData gives us updated words when they change.
     val allWords: LiveData<List<Weather>>
@@ -30,6 +35,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // viewModelScope which we can use here.
     fun insert(word: Weather) = viewModelScope.launch {
         repository.insert(word)
-    }
+    }*/
 
 }

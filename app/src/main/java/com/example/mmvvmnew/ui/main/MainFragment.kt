@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mmvvmnew.R
@@ -36,7 +37,7 @@ class MainFragment : Fragment() {
         val mngr=LinearLayoutManager(activity!!)
 
         recylview?.layoutManager=mngr
-        recylview?.addItemDecoration(DividerItemDecoration(activity!!, mngr.orientation))
+//        recylview?.addItemDecoration(DividerItemDecoration(activity!!, mngr.orientation))
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -44,11 +45,24 @@ class MainFragment : Fragment() {
         val jsonObject=JSONObject()
         val gson = Gson()
         val weather = gson.fromJson(loadJSONFromAsset(), Weather::class.java)
+        val adapter = WeatherListAdapter(activity!!)
+        recylview.adapter = adapter
+        recylview.layoutManager = LinearLayoutManager(activity!!)
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
-        viewModel.insert(weather)
 
+//        viewModel.insert(weather)
+
+
+        // Add an observer on the LiveData returned by getAlphabetizedWords.
+        // The onChanged() method fires when the observed data changes and the activity is
+        // in the foreground.
+        viewModel.allWords.observe(this, Observer { weatherList ->
+            // Update the cached copy of the words in the adapter.
+            weatherList?.let { adapter.setWords(it.toList()) }
+        })
+
+        viewModel.allWords.value=weather.list.toMutableList()
 
     }
 

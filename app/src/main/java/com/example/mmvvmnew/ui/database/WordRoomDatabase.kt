@@ -6,15 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.mmvvmnew.ui.models.*
 
-@Database(
+/*@Database(
     entities = arrayOf(
-       /* City::class, Clouds::class, Coord::class,
+       *//* City::class, Clouds::class, Coord::class,
         Rain::class, SingleWeather::class, Sys::class, Weather::class,
-        WeatherProperties::class, WeatherType::class, Wind::class*/
+        WeatherProperties::class, WeatherType::class, Wind::class*//*
         Weather::class,City::class,SingleWeather::class,WeatherDetailsJoin::class,
         WeatherCityJoin::class
     ), version = 1,exportSchema = false
-)
+)*/
 public abstract class WeatherRoomDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
 
