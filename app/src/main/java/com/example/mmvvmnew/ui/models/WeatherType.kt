@@ -1,11 +1,13 @@
 package com.example.mmvvmnew.ui.models
 
 import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 //@Entity(tableName = "weather_type_table")
 data class WeatherType(
-    val description: String,
-    val icon: String,
-    val id: Int,
-    val main: String
+    var description: String,
+    var icon: String,
+    @PrimaryKey
+    var id: Int,
+    var main: String
 )

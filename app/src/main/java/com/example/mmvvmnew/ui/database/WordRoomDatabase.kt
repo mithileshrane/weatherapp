@@ -4,17 +4,20 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.mmvvmnew.ui.models.*
+import com.example.mmvvmnew.ui.models.City
+import com.example.mmvvmnew.ui.models.SingleWeather
+import com.example.mmvvmnew.ui.models.Weather
+import com.example.mmvvmnew.ui.models.WeatherType
 
-/*@Database(
+@Database(
     entities = arrayOf(
-       *//* City::class, Clouds::class, Coord::class,
-        Rain::class, SingleWeather::class, Sys::class, Weather::class,
-        WeatherProperties::class, WeatherType::class, Wind::class*//*
-        Weather::class,City::class,SingleWeather::class,WeatherDetailsJoin::class,
-        WeatherCityJoin::class
-    ), version = 1,exportSchema = false
-)*/
+        /* City::class, Clouds::class, Coord::class,
+         Rain::class, SingleWeather::class, Sys::class, Weather::class,
+         WeatherProperties::class, WeatherType::class, Wind::class*/
+        Weather::class, City::class, SingleWeather::class/*, WeatherType::class*//*,WeatherDetailsJoin::class,
+        WeatherCityJoin::class*/
+    ), version = 1, exportSchema = false
+)
 public abstract class WeatherRoomDatabase : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
 
@@ -34,7 +37,8 @@ public abstract class WeatherRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     WeatherRoomDatabase::class.java,
                     "weather_database"
-                ).build()
+                ).setJournalMode(JournalMode.TRUNCATE)
+                    .build()
                 INSTANCE = instance
                 return instance
             }

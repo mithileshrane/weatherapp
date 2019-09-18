@@ -4,5 +4,5 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 data class Clouds(
-    val all: Int
+    var all: Int
 )

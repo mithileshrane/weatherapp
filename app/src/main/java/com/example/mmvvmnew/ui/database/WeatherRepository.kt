@@ -1,6 +1,7 @@
 package com.example.mmvvmnew.ui.database
 
 import androidx.lifecycle.LiveData
+import com.example.mmvvmnew.ui.models.SingleWeather
 import com.example.mmvvmnew.ui.models.Weather
 
 // Declares the DAO as a private property in the constructor. Pass in the DAO
@@ -10,11 +11,15 @@ class WeatherRepository(private val wordDao: WeatherDao) {
     // Room executes all queries on a separate thread.
     // Observed LiveData will notify the observer when the data has changed.
     val allWords: LiveData<List<Weather>> = wordDao.getAllWords()
+    val allSingleWeather: LiveData<List<SingleWeather>> = wordDao.getAllSingleWeather()
 
 
     // The suspend modifier tells the compiler that this must be called from a
     // coroutine or another suspend function.
     suspend fun insert(word: Weather) {
+
         wordDao.insert(word)
+        wordDao.insert(word.list!!)
+        wordDao.insert(word.city!!)
     }
 }

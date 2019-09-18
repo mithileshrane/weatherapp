@@ -1,27 +1,51 @@
 package com.example.mmvvmnew.ui.models
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.google.gson.annotations.SerializedName
 
 
-@Entity(tableName = "weather")
-data class SingleWeather(
+@Entity(
+    tableName = "weather",
+    foreignKeys = arrayOf(
+        ForeignKey(
+            entity = City::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("cityId")
+        ),
+        ForeignKey(
+            entity = WeatherType::class,
+            parentColumns = arrayOf("id"),
+            childColumns = arrayOf("weatherTypeId")
+        )
+    )
+)
+class SingleWeather {
     @Embedded
-    val clouds: Clouds,
+    var clouds: Clouds? = null
+
     @PrimaryKey
     @SerializedName("dt")
-    val id: Int,
-    val dt_txt: String,
+    @ColumnInfo(name = "id")
+    var id: Int? = null
+
+    var dt_txt: String? = null
+
     @Embedded
-    val main: WeatherProperties,
+    var main: WeatherProperties? = null
+
     @Embedded
-    val rain: Rain,
+    var rain: Rain? = null
+
     @Embedded
-    val sys: Sys,
+    var sys: Sys? = null
+
+    @Ignore
     @Embedded
-    val weather: List<WeatherType>,
+    var weather: List<WeatherType>? = null
+
     @Embedded
-    val wind: Wind
-)
+    var wind: Wind? = null
+
+    var cityId: Int? = null
+    var weatherTypeId: Int? = null
+}

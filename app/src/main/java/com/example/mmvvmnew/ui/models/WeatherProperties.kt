@@ -3,12 +3,12 @@ package com.example.mmvvmnew.ui.models
 import androidx.room.Entity
 
 data class WeatherProperties(
-    val grnd_level: Double,
-    val humidity: Double,
-    val pressure: Double,
-    val sea_level: Double,
-    val temp: Double,
-    val temp_kf: Double,
-    val temp_max: Double,
-    val temp_min: Double
+    var grnd_level: Double,
+    var humidity: Double,
+    var pressure: Double,
+    var sea_level: Double,
+    var temp: Double,
+    var temp_kf: Double,
+    var temp_max: Double,
+    var temp_min: Double
 )

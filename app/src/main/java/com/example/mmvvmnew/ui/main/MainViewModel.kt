@@ -9,24 +9,35 @@ import com.example.mmvvmnew.ui.database.WeatherRepository
 import com.example.mmvvmnew.ui.database.WeatherRoomDatabase
 import com.example.mmvvmnew.ui.models.SingleWeather
 import com.example.mmvvmnew.ui.models.Weather
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     var pusta: List<SingleWeather> = emptyList()
 
-    val allWords = MutableLiveData<MutableList<SingleWeather>>(pusta.toMutableList())
+//    val allWords = MutableLiveData<MutableList<SingleWeather>>(pusta.toMutableList())
 
-    /*// The ViewModel maintains a reference to the repository to get data.
+    // The ViewModel maintains a reference to the repository to get data.
     private val repository: WeatherRepository
     // LiveData gives us updated words when they change.
-    val allWords: LiveData<List<Weather>>
+
+    lateinit var allWords: LiveData<List<SingleWeather>>
+    lateinit var allWordsDeferred:  Deferred<LiveData<List<SingleWeather>>>
 
     init {
+
+
         // Gets reference to WordDao from WordRoomDatabase to construct
         // the correct WeatherRepository.
         val weatherDao = WeatherRoomDatabase.getDatabase(application).weatherDao()
         repository = WeatherRepository(weatherDao)
-        allWords = repository.allWords
+
+
+
+        allWordsDeferred =  lazy {
+            GlobalScope.async(start = CoroutineStart.LAZY) {
+              repository.allSingleWeather
+            }
+        }.value
     }
 
     // The implementation of insert() is completely hidden from the UI.
@@ -35,6 +46,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // viewModelScope which we can use here.
     fun insert(word: Weather) = viewModelScope.launch {
         repository.insert(word)
-    }*/
+    }
 
 }
