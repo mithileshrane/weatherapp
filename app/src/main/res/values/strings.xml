@@ -7,4 +7,5 @@
     <string name="txt_humidity">Humidity %1s</string>
     <string name="txt_pressure">Pressure %1s pa</string>
     <string name="txt_sea_level">Sea Level %1s m</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

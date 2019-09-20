@@ -2,6 +2,7 @@ package com.example.mmvvmnew.ui.main
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +17,13 @@ import java.io.IOException
 import java.nio.charset.Charset
 import com.google.gson.Gson
 import com.example.mmvvmnew.ui.models.Weather
+import io.reactivex.rxjava3.core.Flowable
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.observers.DisposableObserver
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 
 
@@ -44,24 +52,67 @@ class MainFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val jsonObject = JSONObject()
-        val gson = Gson()
-        val weather = gson.fromJson(loadJSONFromAsset(), Weather::class.java)
+
         val adapter = WeatherListAdapter(activity!!)
         recylview.adapter = adapter
         recylview.layoutManager = LinearLayoutManager(activity!!)
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        viewModel.insert(weather)
+       viewModel.progress.observe(this, Observer {
+            when(it){
+                View.VISIBLE->{
+                    Log.d("SUB", "VISIBLE")
+                    pBarLayout?.visibility=View.VISIBLE
+                }
+                View.GONE->{
+                    Log.d("SUB", "GONE")
+                    pBarLayout?.visibility=View.GONE
+                }
+            }
+        })
+
 
 
         Coroutines.main {
             viewModel.allWordsDeferred.await().observe(this, Observer { weatherList ->
                 // Update the cached copy of the words in the adapter.
+                Log.d("SUB", "Observer")
+                if (weatherList.isNotEmpty())
+                    viewModel.progress.value=View.GONE
                 weatherList?.let { adapter.setWords(it) }
             })
         }
+
+
+        val compositeDisposable = CompositeDisposable()
+        val observable = object : Observable<String>() {
+            override fun subscribeActual(observer: io.reactivex.rxjava3.core.Observer<in String>?) {
+            }
+        }
+
+
+        val observer = object : io.reactivex.rxjava3.core.Observer<String> {
+
+            override fun onComplete() {
+                Log.d("SUB", "onComplete")
+            }
+
+            override fun onSubscribe(d: Disposable?) {
+
+            }
+
+            override fun onNext(t: String?) {
+                Log.d("SUB", "onNext ${t}")
+            }
+
+            override fun onError(e: Throwable?) {
+
+            }
+        }
+
+        compositeDisposable.add(observable.subscribeOn(Schedulers.io()).observeOn(Schedulers.newThread()).subscribe { observer })
+
 
         // Add an observer on the LiveData returned by getAlphabetizedWords.
         // The onChanged() method fires when the observed data changes and the activity is
@@ -92,4 +143,10 @@ class MainFragment : Fragment() {
         return json
     }
 
+    override fun onResume() {
+        super.onResume()
+        val gson = Gson()
+        val weather = gson.fromJson(loadJSONFromAsset(), Weather::class.java)
+        viewModel.insert(weather)
+    }
 }

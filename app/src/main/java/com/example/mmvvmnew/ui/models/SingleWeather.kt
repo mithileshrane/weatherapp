@@ -11,12 +11,12 @@ import com.google.gson.annotations.SerializedName
             entity = City::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("cityId")
-        ),
+        )/*,
         ForeignKey(
             entity = WeatherType::class,
             parentColumns = arrayOf("id"),
             childColumns = arrayOf("weatherTypeId")
-        )
+        )*/
     )
 )
 class SingleWeather {

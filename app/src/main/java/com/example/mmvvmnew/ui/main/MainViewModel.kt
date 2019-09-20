@@ -1,6 +1,7 @@
 package com.example.mmvvmnew.ui.main
 
 import android.app.Application
+import android.os.Handler
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,10 @@ import com.example.mmvvmnew.ui.database.WeatherRoomDatabase
 import com.example.mmvvmnew.ui.models.SingleWeather
 import com.example.mmvvmnew.ui.models.Weather
 import kotlinx.coroutines.*
+import android.icu.lang.UCharacter.GraphemeClusterBreak.T
+import android.view.View
+import com.example.mmvvmnew.ui.models.Coroutines
+
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
     var pusta: List<SingleWeather> = emptyList()
@@ -21,7 +26,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // LiveData gives us updated words when they change.
 
     lateinit var allWords: LiveData<List<SingleWeather>>
-    lateinit var allWordsDeferred:  Deferred<LiveData<List<SingleWeather>>>
+    lateinit var allWordsDeferred: Deferred<LiveData<List<SingleWeather>>>
+    var progress = MutableLiveData<Int>()
 
     init {
 
@@ -31,11 +37,13 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         val weatherDao = WeatherRoomDatabase.getDatabase(application).weatherDao()
         repository = WeatherRepository(weatherDao)
 
+        progress.value = View.VISIBLE
 
+        allWordsDeferred = lazy {
 
-        allWordsDeferred =  lazy {
             GlobalScope.async(start = CoroutineStart.LAZY) {
-              repository.allSingleWeather
+
+                repository.allSingleWeather
             }
         }.value
     }
@@ -44,8 +52,8 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     // We don't want insert to block the main thread, so we're launching a new
     // coroutine. ViewModels have a coroutine scope based on their lifecycle called
     // viewModelScope which we can use here.
-    fun insert(word: Weather) = viewModelScope.launch {
-        repository.insert(word)
-    }
+    fun insert(word: Weather) =
+        Handler().postDelayed({ viewModelScope.launch { repository.insert(word) } }, 3000)
+
 
 }
